@@ -24,11 +24,11 @@ module.exports = {
 
     getUsers: callBack => {
         pool.query(`
-                SELECT id, firstName, lastName, gender, email, number from resgistration`,
+                SELECT id,firstName,lastName,gender,email,password,number from registration`,
                 [],
                 (error, results, fields) => {
                     if(error){
-                        callBack(error)
+                        return callBack(error)
                     }
                     return callBack(null, results)
                 }
@@ -37,7 +37,7 @@ module.exports = {
 
     getUsersById: (id, callBack) => {
         pool.query(`
-                SELECT id, firstName, lastName, gender, email, number from resgistration WHERE id = ?`,
+                SELECT id,firstName,lastName,gender,email,number from registration WHERE id = ?`,
                 [id],
                 (error, results, fields) => {
                     if(error){
@@ -50,7 +50,7 @@ module.exports = {
 
     updateUser: (data, callBack) => {
         pool.query(
-            `UPDATE registration set firstName=?, lastName=?, gender=?, email=?, password=?, number=? WHERE id = ?)`,
+            `UPDATE registration set firstName=?, lastName=?, gender=?, email=?, password=?, number=? WHERE id = ?`,
             [
                 data.first_name,
                 data.last_name,
@@ -64,7 +64,7 @@ module.exports = {
                 if(error){
                     return callBack(error)
                 }
-                return callBack(null, results[0])
+                return callBack(null, results)
             }
         )
     },
@@ -76,6 +76,19 @@ module.exports = {
             (error, results, fields) => {
                 if(error){
                     return callBack(error)
+                }
+                return callBack(null, results[0])
+            }
+        )
+    },
+
+    getUserByUserEmail: (email, callBack) => {
+        pool.query(
+            `SELECT * FROM registration WHERE email=?`,
+            [email],
+            (error, results, fields) => {
+                if(error){
+                    callBack(error)
                 }
                 return callBack(null, results[0])
             }
